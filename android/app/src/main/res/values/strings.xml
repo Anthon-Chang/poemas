@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Versos del Alma</string>
+    <string name="title_activity_main">Versos del Alma</string>
+    <string name="package_name">io.anthonchang.poemas</string>
+    <string name="custom_url_scheme">io.anthonchang.poemas</string>
+</resources>

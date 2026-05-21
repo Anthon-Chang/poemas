@@ -1,23 +1,41 @@
 import { Component, OnInit } from '@angular/core';
+
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent,
-  IonList, IonItem, IonLabel, IonButton, IonIcon,
-  IonFab, IonFabButton, IonCard, IonCardHeader,
-  IonCardTitle, IonCardSubtitle, IonCardContent,
-  IonBadge, IonChip, IonSearchbar, IonSkeletonText,
-  IonThumbnail, IonButtons, IonBackButton
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonLabel,
+  IonIcon,
+  IonFab,
+  IonFabButton,
+  IonChip,
+  IonSearchbar,
+  IonSkeletonText
 } from '@ionic/angular/standalone';
+
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 import { addIcons } from 'ionicons';
+
 import {
-  bookOutline, addOutline, createOutline, trashOutline,
-  playOutline, musicalNoteOutline, logoYoutube,
-  heartOutline, heart, searchOutline, timeOutline
+  bookOutline,
+  addOutline,
+  createOutline,
+  trashOutline,
+  musicalNoteOutline,
+  logoYoutube,
+  timeOutline
 } from 'ionicons/icons';
+
 import { VideojuegosService, Poema } from '../../services/videojuegos';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
+import {
+  DomSanitizer,
+  SafeResourceUrl
+} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-videojuegos',
@@ -25,24 +43,35 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./videojuegos.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, FormsModule, RouterLink,
-    IonHeader, IonToolbar, IonTitle, IonContent,
-    IonList, IonItem, IonLabel, IonButton, IonIcon,
-    IonFab, IonFabButton, IonCard, IonCardHeader,
-    IonCardTitle, IonCardSubtitle, IonCardContent,
-    IonBadge, IonChip, IonSearchbar, IonSkeletonText,
-    IonThumbnail, IonButtons, IonBackButton
+    CommonModule,
+    FormsModule,
+    RouterLink,
+
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+
+    IonLabel,
+    IonIcon,
+    IonFab,
+    IonFabButton,
+    IonChip,
+    IonSearchbar,
+    IonSkeletonText
   ]
 })
 export class VideojuegosPage implements OnInit {
 
   poemas: Poema[] = [];
   poemasFiltrados: Poema[] = [];
+
   busqueda: string = '';
   cargando: boolean = true;
 
   poemaActivo: Poema | null = null;
   videoUrl: SafeResourceUrl | null = null;
+
   audioActivo: HTMLAudioElement | null = null;
   reproduciendo: boolean = false;
 
@@ -51,17 +80,27 @@ export class VideojuegosPage implements OnInit {
     private sanitizer: DomSanitizer
   ) {
     addIcons({
-      bookOutline, addOutline, createOutline, trashOutline,
-      playOutline, musicalNoteOutline, logoYoutube,
-      heartOutline, heart, searchOutline, timeOutline
+      bookOutline,
+      addOutline,
+      createOutline,
+      trashOutline,
+      musicalNoteOutline,
+      logoYoutube,
+      timeOutline
     });
   }
 
-  ngOnInit() { this.cargar(); }
-  ionViewWillEnter() { this.cargar(); }
+  ngOnInit() {
+    this.cargar();
+  }
+
+  ionViewWillEnter() {
+    this.cargar();
+  }
 
   async cargar() {
     this.cargando = true;
+
     try {
       this.poemas = await this.videojuegosService.listar();
       this.poemasFiltrados = [...this.poemas];
@@ -73,7 +112,8 @@ export class VideojuegosPage implements OnInit {
   }
 
   filtrar(event: any) {
-    const q = event.target.value?.toLowerCase() || '';
+    const q = event.detail.value?.toLowerCase() || '';
+
     this.poemasFiltrados = this.poemas.filter(p =>
       p.titulo.toLowerCase().includes(q) ||
       p.autor.toLowerCase().includes(q) ||
@@ -86,16 +126,23 @@ export class VideojuegosPage implements OnInit {
     await this.cargar();
   }
 
-  // ── Video YouTube ─────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
+  // VIDEO YOUTUBE
+  // ─────────────────────────────────────────────
 
   verVideo(poema: Poema) {
+
     if (!poema.youtube_url) return;
+
     this.poemaActivo = poema;
+
     const videoId = this.extraerYoutubeId(poema.youtube_url);
+
     if (videoId) {
-      this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-        `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`
-      );
+      this.videoUrl =
+        this.sanitizer.bypassSecurityTrustResourceUrl(
+          `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`
+        );
     }
   }
 
@@ -105,35 +152,54 @@ export class VideojuegosPage implements OnInit {
   }
 
   extraerYoutubeId(url: string): string | null {
-    const regExp = /(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+
+    const regExp =
+      /(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+
     const match = url.match(regExp);
+
     return match ? match[1] : null;
   }
 
-  // ── Audio ─────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
+  // AUDIO
+  // ─────────────────────────────────────────────
 
   toggleAudio(poema: Poema) {
     if (!poema.audio_url) return;
 
-    if (this.audioActivo && this.reproduciendo) {
-      this.audioActivo.pause();
-      this.reproduciendo = false;
+    // Si el usuario da clic en el poema que ya está sonando, pausamos o reanudamos
+    if (this.audioActivo && this.audioActivo.src === poema.audio_url) {
+      if (this.reproduciendo) {
+        this.audioActivo.pause();
+        this.reproduciendo = false;
+      } else {
+        this.audioActivo.play();
+        this.reproduciendo = true;
+      }
       return;
     }
 
+    // Si había otro poema sonando antes, lo detenemos por completo
     if (this.audioActivo) {
       this.audioActivo.pause();
       this.audioActivo = null;
+      this.reproduciendo = false;
     }
 
+    // Instanciamos el nuevo audio del poema seleccionado
     this.audioActivo = new Audio(poema.audio_url);
     this.audioActivo.play();
     this.reproduciendo = true;
 
+    // Al terminar la pista, reseteamos los estados limpios
     this.audioActivo.onended = () => {
       this.reproduciendo = false;
+      this.audioActivo = null;
     };
   }
 
-  get skeletonArray() { return Array(4); }
+  get skeletonArray() {
+    return Array(4);
+  }
 }
