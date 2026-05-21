@@ -80,10 +80,10 @@
 
           <button *ngIf="poema.audio_url"
                   class="btn-media btn-audio"
-                  [class.playing]="reproduciendo && audioActivo"
+                  [class.playing]="reproduciendo && poemaReproduciendoId === poema.id"
                   (click)="toggleAudio(poema)">
-            <ion-icon [name]="reproduciendo ? 'pause-outline' : 'musical-note-outline'"></ion-icon>
-            <span>{{ reproduciendo ? 'Pausar' : 'Escuchar' }}</span>
+            <ion-icon [name]="(reproduciendo && poemaReproduciendoId === poema.id) ? 'pause-outline' : 'musical-note-outline'"></ion-icon>
+            <span>{{ (reproduciendo && poemaReproduciendoId === poema.id) ? 'Pausar' : 'Escuchar' }}</span>
           </button>
 
         </div>

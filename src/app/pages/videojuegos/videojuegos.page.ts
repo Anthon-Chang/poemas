@@ -74,6 +74,7 @@ export class VideojuegosPage implements OnInit {
 
   audioActivo: HTMLAudioElement | null = null;
   reproduciendo: boolean = false;
+  poemaReproduciendoId: number | null = null;
 
   constructor(
     private videojuegosService: VideojuegosService,
@@ -169,7 +170,7 @@ export class VideojuegosPage implements OnInit {
     if (!poema.audio_url) return;
 
     // Si el usuario da clic en el poema que ya está sonando, pausamos o reanudamos
-    if (this.audioActivo && this.audioActivo.src === poema.audio_url) {
+    if (this.audioActivo && this.poemaReproduciendoId === poema.id) {
       if (this.reproduciendo) {
         this.audioActivo.pause();
         this.reproduciendo = false;
@@ -185,10 +186,12 @@ export class VideojuegosPage implements OnInit {
       this.audioActivo.pause();
       this.audioActivo = null;
       this.reproduciendo = false;
+      this.poemaReproduciendoId = null;
     }
 
     // Instanciamos el nuevo audio del poema seleccionado
     this.audioActivo = new Audio(poema.audio_url);
+    this.poemaReproduciendoId = poema.id ?? null;
     this.audioActivo.play();
     this.reproduciendo = true;
 
@@ -196,6 +199,7 @@ export class VideojuegosPage implements OnInit {
     this.audioActivo.onended = () => {
       this.reproduciendo = false;
       this.audioActivo = null;
+      this.poemaReproduciendoId = null;
     };
   }
 
