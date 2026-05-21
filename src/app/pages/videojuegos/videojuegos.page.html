@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Venta de Videojuegos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-list>
+    <ion-item *ngFor="let juego of videojuegos">
+      <ion-label>
+        <h2>{{ juego.titulo }}</h2>
+        <p>{{ juego.plataforma }} | {{ juego.categoria }}</p>
+        <p>Precio: ${{ juego.precio }} | Stock: {{ juego.stock }}</p>
+      </ion-label>
+
+      <ion-button color="warning" [routerLink]="['/videojuegos-form', juego.id]">
+        Editar
+      </ion-button>
+
+      <ion-button color="danger" (click)="eliminar(juego.id!)">
+        Eliminar
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button routerLink="/videojuegos-form">
+      +
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
