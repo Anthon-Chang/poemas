@@ -1,72 +1,147 @@
-<ion-header>
+<ion-header class="form-header">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/poemas" class="back-btn"></ion-back-button>
+    </ion-buttons>
     <ion-title>
-      {{ id ? 'Editar Videojuego' : 'Nuevo Videojuego' }}
+      <span class="form-title-text">
+        {{ id ? '✏️ Editar poema' : '✒️ Nuevo poema' }}
+      </span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="form-content">
 
-  <ion-item>
-    <ion-label position="stacked">
-      Título
-    </ion-label>
+  <!-- Éxito overlay -->
+  <div class="success-overlay" *ngIf="exito">
+    <div class="success-box">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      <p>¡Poema guardado!</p>
+    </div>
+  </div>
 
-    <ion-input
-      [(ngModel)]="videojuego.titulo">
-    </ion-input>
-  </ion-item>
+  <!-- Preview imagen -->
+  <div class="imagen-preview" *ngIf="poema.imagen_url"
+       [style.backgroundImage]="'url(' + poema.imagen_url + ')'">
+    <div class="preview-overlay"></div>
+    <p class="preview-label">Vista previa de portada</p>
+  </div>
 
-  <ion-item>
-    <ion-label position="stacked">
-      Plataforma
-    </ion-label>
+  <div class="form-container">
 
-    <ion-input
-      [(ngModel)]="videojuego.plataforma">
-    </ion-input>
-  </ion-item>
+    <!-- Título -->
+    <div class="campo-grupo">
+      <label class="campo-label">📖 Título del poema *</label>
+      <input class="campo-input"
+             [(ngModel)]="poema.titulo"
+             placeholder="Ej: Rima XXI"
+             type="text">
+    </div>
 
-  <ion-item>
-    <ion-label position="stacked">
-      Precio
-    </ion-label>
+    <!-- Autor -->
+    <div class="campo-grupo">
+      <label class="campo-label">✍️ Autor *</label>
+      <input class="campo-input"
+             [(ngModel)]="poema.autor"
+             placeholder="Ej: Gustavo Adolfo Bécquer"
+             type="text">
+    </div>
 
-    <ion-input
-      type="number"
-      [(ngModel)]="videojuego.precio">
-    </ion-input>
-  </ion-item>
+    <!-- Época -->
+    <div class="campo-grupo">
+      <label class="campo-label">🕰️ Época / Movimiento</label>
+      <input class="campo-input"
+             [(ngModel)]="poema.epoca"
+             placeholder="Ej: Romanticismo, s. XIX"
+             type="text">
+    </div>
 
-  <ion-item>
-    <ion-label position="stacked">
-      Stock
-    </ion-label>
+    <!-- Contenido -->
+    <div class="campo-grupo">
+      <label class="campo-label">📜 Contenido del poema *</label>
+      <textarea class="campo-textarea"
+                [(ngModel)]="poema.contenido"
+                rows="8"
+                placeholder="Escribe aquí los versos..."></textarea>
+    </div>
 
-    <ion-input
-      type="number"
-      [(ngModel)]="videojuego.stock">
-    </ion-input>
-  </ion-item>
+    <!-- Separador multimedia -->
+    <div class="seccion-titulo">
+      <div class="linea-decorativa"></div>
+      <span>🎬 Multimedia</span>
+      <div class="linea-decorativa"></div>
+    </div>
 
-  <ion-item>
-    <ion-label position="stacked">
-      Categoría
-    </ion-label>
+    <!-- YouTube URL -->
+    <div class="campo-grupo">
+      <label class="campo-label">
+        <ion-icon name="link-outline"></ion-icon>
+        URL de YouTube / TikTok
+      </label>
+      <input class="campo-input"
+             [(ngModel)]="poema.youtube_url"
+             placeholder="https://www.youtube.com/watch?v=..."
+             type="url">
+      <p class="campo-hint">Añade un video donde se recite el poema</p>
+    </div>
 
-    <ion-input
-      [(ngModel)]="videojuego.categoria">
-    </ion-input>
-  </ion-item>
+    <!-- Audio desde Supabase Storage -->
+    <div class="campo-grupo">
+      <label class="campo-label">
+        <ion-icon name="musical-note-outline"></ion-icon>
+        Audio del poema (Supabase Storage)
+      </label>
 
-  <ion-button
-    expand="block"
-    class="ion-margin-top"
-    (click)="guardar()">
+      <div class="upload-box" (click)="audioInput.click()">
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+        <span *ngIf="!subiendoAudio && !poema.audio_url">Subir archivo de audio (.mp3, .ogg…)</span>
+        <span *ngIf="subiendoAudio">
+          <ion-spinner name="dots"></ion-spinner> Subiendo audio...
+        </span>
+        <span *ngIf="poema.audio_url && !subiendoAudio" class="upload-ok">✅ Audio cargado</span>
+      </div>
+      <input #audioInput type="file" accept="audio/*" hidden
+             (change)="onAudioSeleccionado($event)">
 
-    Guardar
+      <!-- o URL manual -->
+      <input class="campo-input campo-input-sm"
+             [(ngModel)]="poema.audio_url"
+             placeholder="…o pega URL de audio directamente"
+             type="url">
+    </div>
 
-  </ion-button>
+    <!-- Imagen desde Supabase Storage -->
+    <div class="campo-grupo">
+      <label class="campo-label">
+        <ion-icon name="image-outline"></ion-icon>
+        Foto de portada (Supabase Storage)
+      </label>
+
+      <div class="upload-box" (click)="imagenInput.click()">
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+        <span *ngIf="!subiendoImagen && !poema.imagen_url">Subir imagen (.jpg, .png…)</span>
+        <span *ngIf="subiendoImagen">
+          <ion-spinner name="dots"></ion-spinner> Subiendo imagen...
+        </span>
+        <span *ngIf="poema.imagen_url && !subiendoImagen" class="upload-ok">✅ Imagen cargada</span>
+      </div>
+      <input #imagenInput type="file" accept="image/*" hidden
+             (change)="onImagenSeleccionada($event)">
+
+      <input class="campo-input campo-input-sm"
+             [(ngModel)]="poema.imagen_url"
+             placeholder="…o pega URL de imagen directamente"
+             type="url">
+    </div>
+
+    <!-- Botón guardar -->
+    <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+      <ion-spinner *ngIf="guardando" name="crescent"></ion-spinner>
+      <ion-icon *ngIf="!guardando" name="save-outline"></ion-icon>
+      <span>{{ guardando ? 'Guardando...' : 'Guardar poema' }}</span>
+    </button>
+
+  </div>
 
 </ion-content>

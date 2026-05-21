@@ -1,57 +1,116 @@
 import { Component, OnInit } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
-  IonItem, IonLabel, IonInput, IonButton
+  IonItem, IonLabel, IonInput, IonButton, IonIcon,
+  IonTextarea, IonBackButton, IonButtons, IonSpinner,
+  IonProgressBar
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { VideojuegosService, Videojuego } from '../../services/videojuegos';
+import { CommonModule } from '@angular/common';
+import { addIcons } from 'ionicons';
+import {
+  saveOutline, arrowBackOutline, imageOutline,
+  musicalNoteOutline, linkOutline, cloudUploadOutline,
+  checkmarkCircleOutline
+} from 'ionicons/icons';
+import { VideojuegosService, Poema } from '../../services/videojuegos';
 
 @Component({
   selector: 'app-videojuego-form',
   templateUrl: './videojuego-form.page.html',
+  styleUrls: ['./videojuego-form.page.scss'],
   standalone: true,
   imports: [
-    FormsModule,
+    CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
-    IonItem, IonLabel, IonInput, IonButton
+    IonItem, IonLabel, IonInput, IonButton, IonIcon,
+    IonTextarea, IonBackButton, IonButtons, IonSpinner,
+    IonProgressBar
   ]
 })
 export class VideojuegoFormPage implements OnInit {
 
   id?: number;
+  guardando: boolean = false;
+  subiendoImagen: boolean = false;
+  subiendoAudio: boolean = false;
+  exito: boolean = false;
 
-  videojuego: Videojuego = {
+  poema: Poema = {
     titulo: '',
-    plataforma: '',
-    precio: 0,
-    stock: 0,
-    categoria: '',
+    autor: '',
+    contenido: '',
+    epoca: '',
+    youtube_url: '',
+    audio_url: '',
     imagen_url: ''
   };
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private videojuegosService: VideojuegosService
-  ) {}
+    private svc: VideojuegosService
+  ) {
+    addIcons({
+      saveOutline, arrowBackOutline, imageOutline,
+      musicalNoteOutline, linkOutline, cloudUploadOutline,
+      checkmarkCircleOutline
+    });
+  }
 
   async ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
-
     if (idParam) {
       this.id = Number(idParam);
-      this.videojuego = await this.videojuegosService.obtenerPorId(this.id);
+      this.poema = await this.svc.obtenerPorId(this.id);
+    }
+  }
+
+  // ── Subir imagen a Supabase Storage ──────────────────────────────────────
+
+  async onImagenSeleccionada(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.subiendoImagen = true;
+    try {
+      this.poema.imagen_url = await this.svc.subirImagen(input.files[0]);
+    } catch (e) {
+      console.error('Error subiendo imagen:', e);
+    } finally {
+      this.subiendoImagen = false;
+    }
+  }
+
+  // ── Subir audio a Supabase Storage ────────────────────────────────────────
+
+  async onAudioSeleccionado(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.subiendoAudio = true;
+    try {
+      this.poema.audio_url = await this.svc.subirAudio(input.files[0]);
+    } catch (e) {
+      console.error('Error subiendo audio:', e);
+    } finally {
+      this.subiendoAudio = false;
     }
   }
 
   async guardar() {
-    if (this.id) {
-      await this.videojuegosService.actualizar(this.id, this.videojuego);
-    } else {
-      await this.videojuegosService.crear(this.videojuego);
+    this.guardando = true;
+    try {
+      if (this.id) {
+        await this.svc.actualizar(this.id, this.poema);
+      } else {
+        await this.svc.crear(this.poema);
+      }
+      this.exito = true;
+      setTimeout(() => this.router.navigate(['/poemas']), 1200);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.guardando = false;
     }
-
-    this.router.navigate(['/videojuegos']);
   }
 }

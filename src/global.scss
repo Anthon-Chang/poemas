@@ -1,37 +1,38 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
-
-/* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
-
-/* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+/* ── Fuentes Google ── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital@0;1&display=swap');
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* ── Variables globales ── */
+:root {
+  --ion-font-family: 'Lora', Georgia, serif;
+  --ion-background-color: #f5f0e8;
+  --ion-text-color: #2c1a0e;
+  --ion-color-primary: #2c1a0e;
+  --ion-color-primary-rgb: 44, 26, 14;
+  --ion-color-primary-contrast: #f0d080;
+  --ion-color-primary-shade: #1a0f08;
+  --ion-color-primary-tint: #4a3728;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #f5f0e8;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #f5f0e8; }
+::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 4px; }
