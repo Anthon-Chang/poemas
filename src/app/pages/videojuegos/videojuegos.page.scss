@@ -241,24 +241,33 @@
 }
 
 .btn-audio {
-  background: linear-gradient(135deg, var(--verde-hoja), #1a3d17);
+  background: linear-gradient(135deg, #2d5a27, #1a3d17) !important;
   color: white !important;
   box-shadow: 0 3px 10px rgba(45,90,39,0.3);
+  -webkit-appearance: none;
+  appearance: none;
 
   ion-icon { color: white !important; }
+  span { color: white !important; }
 
   &.playing {
-    background: linear-gradient(135deg, #e67e22, #d35400);
+    background: linear-gradient(135deg, #e67e22, #d35400) !important;
     color: white !important;
     box-shadow: 0 3px 10px rgba(230,126,34,0.3);
     animation: pulse-audio 1.5s ease-in-out infinite;
 
     ion-icon { color: white !important; }
+    span { color: white !important; }
   }
 
-  &:focus, &:focus-visible {
+  &:focus, &:focus-visible, &:hover, &:active {
     outline: none;
     color: white !important;
+    background: linear-gradient(135deg, #2d5a27, #1a3d17) !important;
+  }
+
+  &.playing:focus, &.playing:hover, &.playing:active {
+    background: linear-gradient(135deg, #e67e22, #d35400) !important;
   }
 }
 
