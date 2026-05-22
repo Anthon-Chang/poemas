@@ -93,16 +93,16 @@
         Audio del poema (Supabase Storage)
       </label>
 
-      <div class="upload-box" (click)="audioInput.click()">
+      <div class="upload-box">
         <ion-icon name="cloud-upload-outline"></ion-icon>
         <span *ngIf="!subiendoAudio && !poema.audio_url">Subir archivo de audio (.mp3, .ogg…)</span>
         <span *ngIf="subiendoAudio">
           <ion-spinner name="dots"></ion-spinner> Subiendo audio...
         </span>
         <span *ngIf="poema.audio_url && !subiendoAudio" class="upload-ok">✅ Audio cargado</span>
+        <input type="file" accept="audio/*" class="upload-input-overlay"
+               (change)="onAudioSeleccionado($event)">
       </div>
-      <input #audioInput type="file" accept="audio/*" hidden
-             (change)="onAudioSeleccionado($event)">
 
       <!-- o URL manual -->
       <input class="campo-input campo-input-sm"
@@ -118,16 +118,16 @@
         Foto de portada (Supabase Storage)
       </label>
 
-      <div class="upload-box" (click)="imagenInput.click()">
+      <div class="upload-box">
         <ion-icon name="cloud-upload-outline"></ion-icon>
         <span *ngIf="!subiendoImagen && !poema.imagen_url">Subir imagen (.jpg, .png…)</span>
         <span *ngIf="subiendoImagen">
           <ion-spinner name="dots"></ion-spinner> Subiendo imagen...
         </span>
         <span *ngIf="poema.imagen_url && !subiendoImagen" class="upload-ok">✅ Imagen cargada</span>
+        <input type="file" accept="image/*" class="upload-input-overlay"
+               (change)="onImagenSeleccionada($event)">
       </div>
-      <input #imagenInput type="file" accept="image/*" hidden
-             (change)="onImagenSeleccionada($event)">
 
       <input class="campo-input campo-input-sm"
              [(ngModel)]="poema.imagen_url"
