@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 
 export interface Poema {
   id?: number;
+  user_id?: string;
   titulo: string;
   autor: string;
   contenido: string;
@@ -68,9 +69,10 @@ export class VideojuegosService {
   }
 
   async crear(poema: Poema) {
+    const { data: { user } } = await this.supabase.auth.getUser();
     const { data, error } = await this.supabase
       .from('poemas')
-      .insert(poema)
+      .insert({ ...poema, user_id: user?.id })
       .select();
     if (error) throw error;
     return data;
