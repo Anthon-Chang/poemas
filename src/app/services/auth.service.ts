@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient, Session, User } from '@supabase/supabase-js';
-import { environment } from '../../environments/environment';
+import { SupabaseClient, Session, User } from '@supabase/supabase-js';
+import { supabase } from './supabase.client';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -8,13 +8,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class AuthService {
 
-  private supabase: SupabaseClient;
+  private supabase: SupabaseClient = supabase;
   private _session = new BehaviorSubject<Session | null>(null);
 
   session$: Observable<Session | null> = this._session.asObservable();
 
   constructor() {
-    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
 
     // Cargar sesión existente al iniciar
     this.supabase.auth.getSession().then(({ data }) => {
