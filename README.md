@@ -37,21 +37,21 @@ Aplicación móvil para gestionar una colección de poemas con soporte multimedi
 ```
 poemas/
 ├── resources/
-│   ├── icon.png           # Ícono fuente (1024×1024)
-│   └── splash.png         # Splash screen fuente
+│   ├── icon.png                   # Ícono fuente (1024×1024)
+│   └── splash.png                 # Splash screen fuente
 ├── src/
 │   └── app/
 │       ├── guards/
-│       │   └── auth.guard.ts          # Protege rutas privadas
+│       │   └── auth.guard.ts              # Protege rutas privadas
 │       ├── pages/
-│       │   ├── login/                 # Pantalla de login/registro
-│       │   ├── videojuegos/           # Lista de poemas
-│       │   └── videojuego-form/       # Formulario crear/editar
+│       │   ├── login/                     # Pantalla de login/registro
+│       │   ├── poemas/                    # Lista de poemas
+│       │   └── poema-form/                # Formulario crear/editar
 │       └── services/
-│           ├── supabase.client.ts     # Instancia única de Supabase
-│           ├── auth.service.ts        # Login, registro, logout, sesión
-│           └── videojuegos.ts         # CRUD de poemas + Storage
-├── android/                # Proyecto Android (Capacitor)
+│           ├── supabase.client.ts         # Instancia única de Supabase
+│           ├── auth.service.ts            # Login, registro, logout, sesión
+│           └── poemas.service.ts          # CRUD de poemas + Storage
+├── android/                        # Proyecto Android (Capacitor)
 ├── capacitor.config.ts
 └── angular.json
 ```
