@@ -1,0 +1,65 @@
+<ion-content class="login-content">
+
+  <div class="login-wrapper">
+
+    <div class="login-header">
+      <div class="login-logo">📚</div>
+      <h1>Versos del Alma</h1>
+      <p>{{ modoRegistro ? 'Crea tu cuenta' : 'Inicia sesión para continuar' }}</p>
+    </div>
+
+    <div class="login-card">
+
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <div class="input-wrapper">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input
+            type="email"
+            [(ngModel)]="email"
+            placeholder="tu@correo.com"
+            autocomplete="email"
+            (keyup.enter)="submit()"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <div class="input-wrapper">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <input
+            type="password"
+            [(ngModel)]="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            (keyup.enter)="submit()"
+          />
+        </div>
+      </div>
+
+      <div class="error-msg" *ngIf="error">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ error }}</span>
+      </div>
+
+      <button class="btn-submit" (click)="submit()" [disabled]="cargando">
+        <ion-spinner name="dots" *ngIf="cargando"></ion-spinner>
+        <span *ngIf="!cargando">
+          <ion-icon [name]="modoRegistro ? 'person-add-outline' : 'log-in-outline'"></ion-icon>
+          {{ modoRegistro ? 'Registrarse' : 'Iniciar sesión' }}
+        </span>
+      </button>
+
+      <div class="toggle-modo">
+        <span>{{ modoRegistro ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?' }}</span>
+        <button class="btn-toggle" (click)="toggleModo()">
+          {{ modoRegistro ? 'Iniciar sesión' : 'Registrarse' }}
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</ion-content>

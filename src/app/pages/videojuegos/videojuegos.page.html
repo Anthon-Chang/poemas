@@ -6,6 +6,11 @@
         <span>Versos del Alma</span>
       </div>
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarSesion()" class="btn-logout" title="Cerrar sesión">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
     <ion-searchbar

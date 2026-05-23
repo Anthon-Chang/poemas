@@ -11,10 +11,12 @@ import {
   IonFabButton,
   IonChip,
   IonSearchbar,
-  IonSkeletonText
+  IonSkeletonText,
+  IonButtons,
+  IonButton
 } from '@ionic/angular/standalone';
 
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -27,10 +29,12 @@ import {
   trashOutline,
   musicalNoteOutline,
   logoYoutube,
-  timeOutline
+  timeOutline,
+  logOutOutline
 } from 'ionicons/icons';
 
 import { VideojuegosService, Poema } from '../../services/videojuegos';
+import { AuthService } from '../../services/auth.service';
 
 import {
   DomSanitizer,
@@ -58,7 +62,9 @@ import {
     IonFabButton,
     IonChip,
     IonSearchbar,
-    IonSkeletonText
+    IonSkeletonText,
+    IonButtons,
+    IonButton
   ]
 })
 export class VideojuegosPage implements OnInit {
@@ -78,7 +84,9 @@ export class VideojuegosPage implements OnInit {
 
   constructor(
     private videojuegosService: VideojuegosService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private auth: AuthService,
+    private router: Router
   ) {
     addIcons({
       bookOutline,
@@ -87,7 +95,8 @@ export class VideojuegosPage implements OnInit {
       trashOutline,
       musicalNoteOutline,
       logoYoutube,
-      timeOutline
+      timeOutline,
+      logOutOutline
     });
   }
 
@@ -205,5 +214,10 @@ export class VideojuegosPage implements OnInit {
 
   get skeletonArray() {
     return Array(4);
+  }
+
+  async cerrarSesion() {
+    await this.auth.logout();
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 }
