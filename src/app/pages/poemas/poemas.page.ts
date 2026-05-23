@@ -33,7 +33,7 @@ import {
   logOutOutline
 } from 'ionicons/icons';
 
-import { VideojuegosService, Poema } from '../../services/videojuegos';
+import { PoemasService, Poema } from '../../services/poemas.service';
 import { AuthService } from '../../services/auth.service';
 
 import {
@@ -42,9 +42,9 @@ import {
 } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-videojuegos',
-  templateUrl: './videojuegos.page.html',
-  styleUrls: ['./videojuegos.page.scss'],
+  selector: 'app-poemas',
+  templateUrl: './poemas.page.html',
+  styleUrls: ['./poemas.page.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -67,7 +67,7 @@ import {
     IonButton
   ]
 })
-export class VideojuegosPage implements OnInit {
+export class PoemasPage implements OnInit {
 
   poemas: Poema[] = [];
   poemasFiltrados: Poema[] = [];
@@ -83,7 +83,7 @@ export class VideojuegosPage implements OnInit {
   poemaReproduciendoId: number | null = null;
 
   constructor(
-    private videojuegosService: VideojuegosService,
+    private poemasService: PoemasService,
     private sanitizer: DomSanitizer,
     private auth: AuthService,
     private router: Router
@@ -112,7 +112,7 @@ export class VideojuegosPage implements OnInit {
     this.cargando = true;
 
     try {
-      this.poemas = await this.videojuegosService.listar();
+      this.poemas = await this.poemasService.listar();
       this.poemasFiltrados = [...this.poemas];
     } catch (e) {
       console.error(e);
@@ -132,7 +132,7 @@ export class VideojuegosPage implements OnInit {
   }
 
   async eliminar(id: number) {
-    await this.videojuegosService.eliminar(id);
+    await this.poemasService.eliminar(id);
     await this.cargar();
   }
 

@@ -17,7 +17,7 @@ export interface Poema {
 @Injectable({
   providedIn: 'root'
 })
-export class VideojuegosService {
+export class PoemasService {
 
   private supabase: SupabaseClient = supabase;
 

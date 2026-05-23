@@ -26,12 +26,12 @@ import {
   checkmarkCircleOutline
 } from 'ionicons/icons';
 
-import { VideojuegosService, Poema } from '../../services/videojuegos';
+import { PoemasService, Poema } from '../../services/poemas.service';
 
 @Component({
-  selector: 'app-videojuego-form',
-  templateUrl: './videojuego-form.page.html',
-  styleUrls: ['./videojuego-form.page.scss'],
+  selector: 'app-poema-form',
+  templateUrl: './poema-form.page.html',
+  styleUrls: ['./poema-form.page.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -48,7 +48,7 @@ import { VideojuegosService, Poema } from '../../services/videojuegos';
     IonSpinner
   ]
 })
-export class VideojuegoFormPage implements OnInit {
+export class PoemaFormPage implements OnInit {
 
   id?: number;
 
@@ -70,7 +70,7 @@ export class VideojuegoFormPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private svc: VideojuegosService
+    private svc: PoemasService
   ) {
     addIcons({
       saveOutline,

@@ -15,19 +15,19 @@ export const routes: Routes = [
   {
     path: 'poemas',
     loadComponent: () =>
-      import('./pages/videojuegos/videojuegos.page').then(m => m.VideojuegosPage),
+      import('./pages/poemas/poemas.page').then(m => m.PoemasPage),
     canActivate: [authGuard]
   },
   {
     path: 'poemas-form',
     loadComponent: () =>
-      import('./pages/videojuego-form/videojuego-form.page').then(m => m.VideojuegoFormPage),
+      import('./pages/poema-form/poema-form.page').then(m => m.PoemaFormPage),
     canActivate: [authGuard]
   },
   {
     path: 'poemas-form/:id',
     loadComponent: () =>
-      import('./pages/videojuego-form/videojuego-form.page').then(m => m.VideojuegoFormPage),
+      import('./pages/poema-form/poema-form.page').then(m => m.PoemaFormPage),
     canActivate: [authGuard]
   }
 ];
