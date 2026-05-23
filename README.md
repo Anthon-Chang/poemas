@@ -1,18 +1,20 @@
 # 📚 Versos del Alma
 
-Aplicación móvil para gestionar una colección de poemas, con soporte multimedia. Desarrollada con **Ionic + Angular** y **Supabase** como backend.
+Aplicación móvil para gestionar una colección de poemas con soporte multimedia y autenticación por usuario. Desarrollada con **Ionic + Angular** y **Supabase** como backend.
 
 ---
 
 ## ✨ Funcionalidades
 
+- **Autenticación** con registro e inicio de sesión vía Supabase Auth
+- **Poemas privados por usuario** — cada cuenta ve y gestiona solo sus propios poemas
 - **CRUD completo** de poemas: crear, listar, editar y eliminar
 - **Búsqueda** en tiempo real por título, autor o época literaria
 - **Reproductor de audio** integrado con toggle play/pause
 - **Modal de video** con soporte para URLs de YouTube
 - **Subida de archivos** a Supabase Storage (imágenes de portada y audio)
 - **Skeleton loader** mientras se cargan los datos
-- **Imagen de portada** por poema con vista previa en el formulario
+- **Cerrar sesión** desde el header principal
 
 ---
 
@@ -23,6 +25,7 @@ Aplicación móvil para gestionar una colección de poemas, con soporte multimed
 | Framework UI | Ionic 8 + Angular 20 |
 | Mobile nativo | Capacitor 8 (Android) |
 | Backend / Base de datos | Supabase (PostgreSQL) |
+| Autenticación | Supabase Auth |
 | Almacenamiento de archivos | Supabase Storage |
 | Lenguaje | TypeScript 5.9 |
 | Tests | Karma + Jasmine |
@@ -34,16 +37,21 @@ Aplicación móvil para gestionar una colección de poemas, con soporte multimed
 ```
 poemas/
 ├── resources/
-│   ├── icon.png          # Ícono fuente (1024×1024)
-│   └── splash.png        # Splash screen fuente
+│   ├── icon.png           # Ícono fuente (1024×1024)
+│   └── splash.png         # Splash screen fuente
 ├── src/
 │   └── app/
+│       ├── guards/
+│       │   └── auth.guard.ts          # Protege rutas privadas
 │       ├── pages/
-│       │   ├── videojuegos/       # Lista de poemas
-│       │   └── videojuego-form/   # Formulario crear/editar
+│       │   ├── login/                 # Pantalla de login/registro
+│       │   ├── videojuegos/           # Lista de poemas
+│       │   └── videojuego-form/       # Formulario crear/editar
 │       └── services/
-│           └── videojuegos.ts     # Servicio Supabase + interfaz Poema
-├── android/               # Proyecto Android (Capacitor)
+│           ├── supabase.client.ts     # Instancia única de Supabase
+│           ├── auth.service.ts        # Login, registro, logout, sesión
+│           └── videojuegos.ts         # CRUD de poemas + Storage
+├── android/                # Proyecto Android (Capacitor)
 ├── capacitor.config.ts
 └── angular.json
 ```
@@ -57,6 +65,7 @@ Tabla `poemas` en Supabase:
 | Campo | Tipo | Descripción |
 |---|---|---|
 | `id` | number | Clave primaria (auto) |
+| `user_id` | uuid | ID del usuario propietario (FK a `auth.users`) |
 | `titulo` | string | Título del poema *(requerido)* |
 | `autor` | string | Nombre del autor *(requerido)* |
 | `contenido` | string | Texto completo del poema *(requerido)* |
@@ -65,7 +74,16 @@ Tabla `poemas` en Supabase:
 | `audio_url` | string | URL del audio (Supabase Storage) |
 | `imagen_url` | string | URL de la portada (Supabase Storage) |
 
-Bucket de Storage requerido: **`poemas-media`** (público), con carpetas `imagenes/` y `audios/`.
+### Políticas RLS activas
+
+| Política | Operación | Condición |
+|---|---|---|
+| Usuarios ven sus poemas | SELECT | `auth.uid() = user_id` |
+| Usuarios insertan sus poemas | INSERT | `auth.uid() = user_id` |
+| Usuarios actualizan sus poemas | UPDATE | `auth.uid() = user_id` |
+| Usuarios eliminan sus poemas | DELETE | `auth.uid() = user_id` |
+
+Bucket de Storage: **`poemas-media`** (público), con carpetas `imagenes/` y `audios/`.
 
 ---
 
@@ -124,11 +142,22 @@ Luego abre Android Studio y ejecuta la app en un emulador o dispositivo físico.
 
 ## 📱 Rutas de la app
 
-| Ruta | Pantalla |
-|---|---|
-| `/poemas` | Lista de todos los poemas |
-| `/poemas-form` | Formulario para crear un nuevo poema |
-| `/poemas-form/:id` | Formulario para editar un poema existente |
+| Ruta | Pantalla | Protegida |
+|---|---|---|
+| `/login` | Login / Registro | No |
+| `/poemas` | Lista de poemas | ✅ Sí |
+| `/poemas-form` | Crear poema | ✅ Sí |
+| `/poemas-form/:id` | Editar poema | ✅ Sí |
+
+---
+
+## 🔐 Flujo de autenticación
+
+1. App abre → redirige a `/login`
+2. Usuario se registra o inicia sesión con email y contraseña
+3. Login exitoso → redirige a `/poemas`
+4. Si intenta acceder a una ruta protegida sin sesión → regresa a `/login`
+5. Botón de cerrar sesión en el header termina la sesión y regresa al login
 
 ---
 
